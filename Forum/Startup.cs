@@ -41,11 +41,11 @@ namespace Forum
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if(env.IsDevelopment())
+           // if(env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            else
-                app.UseExceptionHandler("/Home/Error?code=500");
-            app.UseStatusCodePagesWithReExecute("/Home/Error", "?code={0}");
+           // else
+            //    app.UseExceptionHandler("/Home/Error?code=500");
+           // app.UseStatusCodePagesWithReExecute("/Home/Error", "?code={0}");
             app.UseStaticFiles();   
 
             app.UseRouting();
