@@ -27,7 +27,7 @@ namespace Forum.Services
             string host = conf["EmailSettings:LinkHost"];
             var verifyUrl = $"{host}/Account/Verify?id={id}&token={code}";
             string subject = "Verify your account";
-            var fromMail = new MailAddress(conf["MAIL_LOGIN"], conf["MAIL_LOGIN"]);
+            var fromMail = new MailAddress(conf["EmailSettings:Login"], conf["MAIL_LOGINEmailSettings:Login"]);
             var toMail = new MailAddress(email);
             string body = $"<br/><br/>We are excited to tell you, <strong>{username}</strong>, that your account is" +
          " successfully created. Please click on the below link to verify your account" +
@@ -35,12 +35,12 @@ namespace Forum.Services
 
             var smtp = new SmtpClient
             {
-                Host = conf["MAIL_LOGIN"],
+                Host = conf["EmailSettings:Host"],
                 Port = int.Parse(conf["EmailSettings:Port"]),
                 EnableSsl = bool.Parse(conf["EmailSettings:EnableSsl"]),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new System.Net.NetworkCredential(fromMail.Address, conf["MAIL_PASSWORD"])
+                Credentials = new System.Net.NetworkCredential(fromMail.Address, conf["EmailSettings:Password"])
             };
             using (var message = new MailMessage(fromMail, toMail)
             {
