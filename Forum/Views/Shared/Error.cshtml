@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+@{ 
+    string message;
+    switch(ViewData["code"])
+    {
+        case 404: message = "Not Found"; break;
+        case 403: message = "Access Forbidden"; break;
+        case 500: message = "Server Application"; break;
+        default:     message = "Undefined"; break;
+    };
+    }
+<h1 class="text-danger">@message Error with code @ViewData["code"]</h1>
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+

@@ -1,0 +1,66 @@
+﻿@model Forum.ViewModels.TopicShowViewModel
+@{
+    ViewData["Title"] = "Topic";
+}
+<h1 class="text-center">@Model.Topic.Name</h1>
+<h3 class="text-center">Opened by @Model.Topic.User.UserName at @Model.Topic.Opened</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="text-center" style="width:20%" scope="col">Author</th>
+            <th class="text-center" style="width:80%" scope="col">Message</th>
+        </tr>
+    </thead>
+    @foreach (var msg in Model.Topic.Messages)
+    {
+        <tr>
+            <td>
+                <div class="d-flex align-items-start" style="padding:10px">
+                    <div class="p-2">
+                        <img src="~/images/@msg.User.ProfileImage" class="rounded-circle" height="100" width="100" />
+                    </div>
+                    <div class="p-2">
+                        <div class="text-center"><a class="btn btn-link" href="~/Account/Show/@msg.User.UserName">@msg.User.UserName</a></div><br />
+                        <div class="text-center">@msg.Published</div><br />
+                    </div>
+
+                </div>
+            </td>
+            <td><div class="text-center" style="margin: 20px; word-break: break-all"> @msg.Text</div></td>
+        </tr>
+    }
+</table>
+<div style="font-size: 30px;" class="text-center">
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-controller="Topic" asp-action="Show"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-id="@Model.Id"
+           class="btn btn-outline-dark">Back</a>
+    }
+    @Model.PageViewModel.PageNumber
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-controller="Topic" asp-action="Show"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-id="@Model.Id"
+           class="btn btn-outline-dark">Forward</a>
+    }
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <form class="form-group" method="post" asp-controller="Topic" asp-action="AddMessage">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <label asp-for="Text"></label><br />
+            <textarea class="form-control" rows="8" asp-for="Text"></textarea>
+            <span asp-validation-for="Text"></span>
+        </div>
+        <input type="hidden" asp-for="Id" value="@Model.Id" />
+        <input class="btn btn-primary" type="submit" value="Submit" />
+    </form>
+}
+else
+{
+    <h4>Login first to comment</h4>
+}

@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Forum.Models.Topic>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<a href="~/Topic/Create" class="btn btn-primary">Create new topic</a><br/><br />
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width:30%" scope="col">Creator</th>
+            <th style="width:30%" scope="col">Name</th>
+            <th style="width:25%" scope="col">Creation date</th>
+            <th style="width:15%" scope="col">Message count</th>
+        </tr>
+    </thead>
+    @foreach (var topic in Model)
+    {
+    <tr>
+        <td><a class="btn btn-link" href="~/Account/Show/@topic.User.UserName">@topic.User.UserName</a></td>
+        <td><a class="btn btn-link" href="~/Topic/Show/@topic.Id">@topic.Name</a></td>
+        <td>@topic.Opened</td>
+        <td>@topic.MessageCount</td>
+    </tr>
+    }
+    </table>

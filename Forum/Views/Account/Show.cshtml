@@ -1,0 +1,140 @@
+﻿@model Forum.Models.User
+@{
+    ViewData["Title"] = Model.UserName;
+}
+<p>User Profile with name <strong>@Model.UserName</strong></p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <img src="~/images/@Model.ProfileImage" class="rounded-circle" height="250" width="250" />
+            <h5>Registered at @Model.Registered.ToString("yyyy.MM.dd")</h5>
+            <h5>Message Count is @Model.MessageCount</h5>
+            @if (Model.UserName == User.Identity.Name)
+            {
+                <form method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="UploadProfile" class="form-group">
+                    <div>
+                        <label for="ifile">Select Profile Image: </label>
+                        <input id="ifile" name="ifile" type="file">
+                    </div>
+                    <input type="hidden" name="name" value="@Model.UserName" />
+                    <input class="btn btn-outline-primary" type="submit" value="Upload" />
+                </form>
+            }
+        </div>
+        <div class="col-sm-8">
+            @if (Model.UserName != User.Identity.Name)
+            {
+                <div id="scrollDiv" style="height: 60vh; overflow:auto">
+                    <table id="msg-table" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width:20%" scope="col">Who</th>
+                                <th class="text-center" style="width:80%" scope="col">Message</th>
+                            </tr>
+                        </thead>
+                        @foreach (var msg in Model.DialogMessages)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="p-2">
+                                        <div class="text-center"><strong>@msg.Sender.UserName</strong></div><br />
+                                        <div class="text-center">@msg.Published</div><br />
+                                    </div>
+                                </td>
+                                <td><div class="text-center" style="word-break: break-all">@msg.Text</div></td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <form method="post" asp-controller="Account" asp-action="SendPrivateMessage"
+                      class="form-group" data-ajax="true" data-ajax-method="post"
+                      data-ajax-complete="sucess">
+                    <div class="form-group">
+                        <label for="msg"></label>
+                        <textarea class="form-control" rows="3" id="msg" name="text" required></textarea>
+                    </div>
+                    <input class="btn btn-primary" id="sendButton" type="submit" value="Send" />
+                    <input type="hidden" id="name" name="name" value="@Model.UserName" />
+                </form>
+            }
+            else
+            {
+                <div id="scrollDiv" style="height: 60vh; overflow:auto">
+                    <table id="msg-table" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width:20%" scope="col">Who</th>
+                                <th class="text-center" style="width:80%" scope="col">Message</th>
+                            </tr>
+                        </thead>
+                        @foreach (var msg in Model.DialogMessages)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="p-2">
+                                        <div class="text-center">@msg.Sender.UserName</div><br />
+                                        <div class="text-center">
+                                            Dialog with
+                                            @{
+                                                string name = (Model.UserName == msg.Sender.UserName) ? msg.Receiver.UserName : msg.Sender.UserName;
+                                            }
+                                            <a href="~/Account/Show/@name">@name</a>
+                                        </div>
+                                        <div class="text-center">@msg.Published</div><br />
+                                    </div>
+                                </td>
+                                <td><div class="text-center" style="word-break: break-all">@msg.Text</div></td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@section Scripts{
+    @if (Model.UserName != User.Identity.Name)
+    {
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
+    <script>
+        "use strict";
+        scroll = document.getElementById("scrollDiv")
+        scroll.scrollTop = scroll.scrollHeight;
+        var connection = new signalR.HubConnectionBuilder().withUrl("/dialog").build();
+
+        document.getElementById("sendButton").disabled = true;
+
+        connection.on("Notify", function (username, message, datetime) {
+            var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            var tr = document.createElement('tr');
+            var td1 = document.createElement('td');
+            td1.innerHTML = '<div class="p-2">' +
+                `<div class="text-center" >${username}</div ><br />` +
+                `<div class="text-center">${datetime}</div><br /></div>`;
+            var td2 = document.createElement('td');
+            td2.innerHTML = `<div class="text-center" style="word-break: break-all">${msg}</div>`;
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            document.getElementById("msg-table").appendChild(tr);
+            scroll.scrollTop = scroll.scrollHeight;
+        });
+
+        connection.start().then(function () {
+            connection.invoke("Initialize", "@Model.Id").then(function () {
+                document.getElementById("sendButton").disabled = false;
+            });
+        });
+        var username = document.getElementById("name").value;
+        function sucess(xhr) {
+            var message = document.getElementById("msg").value;
+            document.getElementById("msg").value = "";
+            connection.invoke("Send", message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault();
+        };
+    </script>
+    }
+}
