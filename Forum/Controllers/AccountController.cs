@@ -22,18 +22,18 @@ namespace Forum.Controllers
         private readonly ForumContext _db;
         private readonly IWebHostEnvironment env;
         private readonly IConfiguration conf;
-        private readonly Forum.Services.IMailSender mailSender;
+        private readonly Forum.Services.MailConfirmationSender sender;
         private readonly ILogger<AccountController> _logger;
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
                                  ForumContext context, IWebHostEnvironment env, IConfiguration configuration,
-                                 Forum.Services.IMailSender sender, ILogger<AccountController> logger)
+                                 Forum.Services.MailConfirmationSender sender, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = context;
             this.env = env;
             conf = configuration;
-            mailSender = sender;
+            this.sender = sender;
             _logger = logger;
         }
         [Authorize]
@@ -171,7 +171,7 @@ namespace Forum.Controllers
                 if (result.Succeeded)
                 {
                     string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    mailSender.Send(user.UserName, user.Email, user.Id, code);
+                    sender.Send(user.UserName, user.Email, user.Id, code);
                     _logger.LogInformation("{0} just created account.", user.UserName);
                     return RedirectToAction("Login");
                 }

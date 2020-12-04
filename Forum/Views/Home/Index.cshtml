@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+@using Forum.Views
 <a href="~/Topic/Create" class="btn btn-primary">Create new topic</a><br/><br />
 <table class="table table-striped">
     <thead>
@@ -17,7 +18,7 @@
     <tr>
         <td><a class="btn btn-link" href="~/Account/Show/@topic.User.UserName">@topic.User.UserName</a></td>
         <td><a class="btn btn-link" href="~/Topic/Show/@topic.Id">@topic.Name</a></td>
-        <td>@topic.Opened</td>
+        <td>@topic.Opened.ToClientTime(Context.Session)</td>
         <td>@topic.MessageCount</td>
     </tr>
     }

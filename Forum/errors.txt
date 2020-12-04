@@ -19,3 +19,26 @@ Error request with code 404 and ip ::1 with url /Topic/Show/55135
 Application started. Press Ctrl+C to shut down.
 Hosting environment: Development
 Content root path: C:\Users\UserOf\source\repos\Forum\Forum
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\UserOf\source\repos\Forum\Forum
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\UserOf\source\repos\Forum\Forum
+An unhandled exception has occurred while executing the request.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\UserOf\source\repos\Forum\Forum
+An unhandled exception has occurred while executing the request.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\UserOf\source\repos\Forum\Forum
+User 1d0f701a-25be-4113-9b16-83821b15cf57 validation failed: DuplicateUserName;DuplicateEmail.
+User 04c36552-1814-4440-9488-adb31fe1f565 validation failed: DuplicateUserName.
+3 just created account.
+Succesful verification for userId 97af6820-a1df-403c-9e2c-8887b727786a
+Error request with code 400 and ip ::1 with url /Account/Login
+Error request with code 400 and ip ::1 with url /Account/Login
+4 just created account.
+Succesful verification for userId 3a077c7b-efe7-4424-b63b-2328a474386f
+User 4 created topic 7

@@ -2,8 +2,9 @@
 @{
     ViewData["Title"] = "Topic";
 }
+@using Forum.Views 
 <h1 class="text-center">@Model.Topic.Name</h1>
-<h3 class="text-center">Opened by @Model.Topic.User.UserName at @Model.Topic.Opened</h3>
+<h3 class="text-center">Opened by @Model.Topic.User.UserName at @Model.Topic.Opened.ToClientTime(Context.Session)</h3>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -21,7 +22,7 @@
                     </div>
                     <div class="p-2">
                         <div class="text-center"><a class="btn btn-link" href="~/Account/Show/@msg.User.UserName">@msg.User.UserName</a></div><br />
-                        <div class="text-center">@msg.Published</div><br />
+                        <div class="text-center">@msg.Published.ToClientTime(Context.Session)</div><br />
                     </div>
 
                 </div>

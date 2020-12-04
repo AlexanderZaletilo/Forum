@@ -3,12 +3,12 @@
     ViewData["Title"] = Model.UserName;
 }
 <p>User Profile with name <strong>@Model.UserName</strong></p>
-
+@using Forum.Views 
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
             <img src="~/images/@Model.ProfileImage" class="rounded-circle" height="250" width="250" />
-            <h5>Registered at @Model.Registered.ToString("yyyy.MM.dd")</h5>
+            <h5>Registered at @Model.Registered.Date.ToClientTime(Context.Session)</h5>
             <h5>Message Count is @Model.MessageCount</h5>
             @if (Model.UserName == User.Identity.Name)
             {
@@ -38,8 +38,8 @@
                             <tr>
                                 <td>
                                     <div class="p-2">
-                                        <div class="text-center"><strong>@msg.Sender.UserName</strong></div><br />
-                                        <div class="text-center">@msg.Published</div><br />
+                                        <div class="text-center">@msg.Sender.UserName</div><br />
+                                        <div class="text-center">@msg.Published.ToClientTime(Context.Session)</div><br />
                                     </div>
                                 </td>
                                 <td><div class="text-center" style="word-break: break-all">@msg.Text</div></td>
@@ -81,7 +81,7 @@
                                             }
                                             <a href="~/Account/Show/@name">@name</a>
                                         </div>
-                                        <div class="text-center">@msg.Published</div><br />
+                                        <div class="text-center">@msg.Published.ToClientTime(Context.Session)</div><br />
                                     </div>
                                 </td>
                                 <td><div class="text-center" style="word-break: break-all">@msg.Text</div></td>
@@ -118,7 +118,8 @@
             tr.appendChild(td1);
             tr.appendChild(td2);
             document.getElementById("msg-table").appendChild(tr);
-            scroll.scrollTop = scroll.scrollHeight;
+            if (username == @User.Identity.Name)
+                scroll.scrollTop = scroll.scrollHeight;
         });
 
         connection.start().then(function () {
